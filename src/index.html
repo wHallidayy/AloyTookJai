@@ -441,7 +441,6 @@
             MouseConstraint = Matter.MouseConstraint,
             Mouse = Matter.Mouse,
             Composite = Matter.Composite,
-            Constraint = Matter.Constraint,
             Bodies = Matter.Bodies,
             Events = Matter.Events;
 
@@ -486,19 +485,19 @@
             Bodies.rectangle(0, 300, 50, 600, { isStatic: true, render: { fillStyle: '#2C2C44' } })
         ]);
         
-        var ball = Bodies.circle(100, 400, 50, { 
-            density: 0.04, 
+        var axe = Bodies.rectangle(100, 300, 100, 100, { 
+            density: 0.04,
             frictionAir: 0.001,
             render: {
-                fillStyle: '#C44638'
+                sprite: {
+                    texture: '../assets/noun-axe.svg',
+                    xScale: 0.1,
+                    yScale: 0.1
+                }
             }
         });
         
-        Composite.add(world, ball);
-        Composite.add(world, Constraint.create({
-            pointA: { x: 300, y: 0 },
-            bodyB: ball
-        }));
+        Composite.add(world, axe);
 
         var mouse = Mouse.create(render.canvas),
             mouseConstraint = MouseConstraint.create(engine, {
@@ -522,11 +521,13 @@
         Events.on(engine, 'afterUpdate', function() {
             var bodies = Composite.allBodies(world);
             bodies.forEach(function(body) {
-                var dx = body.position.x - body.initialPosition.x;
-                var dy = body.position.y - body.initialPosition.y;
-                var distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance > 20) {
-                    body.render.fillStyle = '#FFC107';
+                if (body.initialPosition) {
+                    var dx = body.position.x - body.initialPosition.x;
+                    var dy = body.position.y - body.initialPosition.y;
+                    var distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance > 20) {
+                        body.render.fillStyle = '#FFC107';
+                    }
                 }
             });
         });
